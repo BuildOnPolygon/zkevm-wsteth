@@ -48,12 +48,12 @@ contract L2wstETH is
   /// @notice Network ID of Ethereum mainnet on the Polygon zkEVM bridge
   uint32 public destId;
 
-  /// @notice This event is emitted when the DAI is bridged
+  /// @notice This event is emitted when the wstETH is bridged
   event TokenBridged(
     address indexed sender, address indexed recipient, uint256 amount
   );
 
-  /// @notice This event is emitted when the DAI is claimed
+  /// @notice This event is emitted when the wstETH is claimed
   event TokenClaimed(
     address indexed sender, address indexed recipient, uint256 amount
   );

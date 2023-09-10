@@ -45,7 +45,7 @@ You can also run individual test using the following command:
 ```sh
 forge test --fork-url $ETH_RPC_URL --match-test bridgeToken -vvvv
 
-forge test --fork-url "https://zkevm-rpc.com" --match-path test/L2Dai.t.sol --match-test testBridgeWithMockedBridge -vvvv
+forge test --fork-url "https://zkevm-rpc.com" --match-path test/L2wstETH.t.sol --match-test testBridgeWithMockedBridge -vvvv
 ```
 
 > **Note**

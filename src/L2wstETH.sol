@@ -1,18 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import {Initializable} from "upgradeable/proxy/utils/Initializable.sol";
-import {UUPSUpgradeable} from "upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlDefaultAdminRulesUpgradeable} from
   "upgradeable/access/AccessControlDefaultAdminRulesUpgradeable.sol";
-import {ERC20Upgradeable} from "upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import {ERC20PermitUpgradeable} from
   "upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
+import {ERC20Upgradeable} from "upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import {Initializable} from "upgradeable/proxy/utils/Initializable.sol";
 import {PausableUpgradeable} from
   "upgradeable/security/PausableUpgradeable.sol";
-
 import {SignatureCheckerUpgradeable} from
   "upgradeable/utils/cryptography/SignatureCheckerUpgradeable.sol";
+import {UUPSUpgradeable} from "upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import {IBridge} from "./IBridge.sol";
 

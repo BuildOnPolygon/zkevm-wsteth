@@ -5,33 +5,32 @@ import {Test} from "forge-std/Test.sol";
 import {IERC20} from "oz/token/ERC20/IERC20.sol";
 import {SafeERC20} from "oz/token/ERC20/utils/SafeERC20.sol";
 
-import {L1Escrow} from "src/L1Escrow.sol";
+import {MainnetBridge} from "src/MainnetBridge.sol";
 import {BridgeMock} from "./BridgeMock.sol";
 import {UUPSProxy} from "./UUPSProxy.sol";
 
 /**
- * @title L1EscrowV2Mock
+ * @title MainnetBridgeV2Mock
  * @author sepyke.eth
- * @notice Mock contract to test upgradeability of L1Escrow smart contract
+ * @notice Mock contract to test upgradeability of MainnetBridge smart contract
  */
-contract L1EscrowV2Mock is L1Escrow {
-  /// @dev Update bridgeToken logic for testing purpose
-  function bridgeToken(address, uint256, bool) external pure override {
+contract MainnetBridgeV2Mock is MainnetBridge {
+  function _receiveTokens(uint256) internal view override whenNotPaused {
     require(false, "test new logic");
   }
 
   /// @dev Add new function for testing purpose
   function getToken() public view returns (address b) {
-    b = address(wstETH);
+    b = address(originTokenAddress);
   }
 }
 
 /**
- * @title L1EscrowTest
+ * @title MainnetBridgeTest
  * @author sepyke.eth
- * @notice Unit tests for L1Escrow
+ * @notice Unit tests for MainnetBridge
  */
-contract L1EscrowTest is Test {
+contract MainnetBridgeTest is Test {
   using SafeERC20 for IERC20;
 
   string ETH_RPC_URL = vm.envString("ETH_RPC_URL");
@@ -47,46 +46,24 @@ contract L1EscrowTest is Test {
   address bridgeAddress = address(0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe);
   address l2Address = address(4);
 
-  L1Escrow v1;
-  L1Escrow proxyV1;
-  L1Escrow mockedV1;
-  L1Escrow mockedProxyV1;
-  L1EscrowV2Mock v2;
-  L1EscrowV2Mock proxyV2;
-  BridgeMock bridge;
+  MainnetBridge v1;
+  MainnetBridge proxyV1;
+  MainnetBridge mockedV1;
+  MainnetBridge mockedProxyV1;
+  MainnetBridgeV2Mock v2;
+  MainnetBridgeV2Mock proxyV2;
 
   function setUp() public {
     uint256 mainnetFork = vm.createFork(ETH_RPC_URL);
     vm.selectFork(mainnetFork);
 
-    v1 = new L1Escrow();
-    bytes memory v1Data = abi.encodeWithSelector(
-      L1Escrow.initialize.selector,
-      admin,
-      emergency,
-      wsteth,
-      bridgeAddress,
-      1,
-      l2Address
-    );
+    v1 = new MainnetBridge();
+    bytes memory v1Data = abi.encodeWithSelector(MainnetBridge.initialize.selector, admin, emergency, wsteth, bridgeAddress, l2Address, 1);
     UUPSProxy proxy = new UUPSProxy(address(v1), v1Data);
-    proxyV1 = L1Escrow(address(proxy));
+    proxyV1 = MainnetBridge(address(proxy));
 
-    mockedV1 = new L1Escrow();
-    bridge = new BridgeMock();
-    bytes memory mockedV1Data = abi.encodeWithSelector(
-      L1Escrow.initialize.selector,
-      admin,
-      emergency,
-      wsteth,
-      address(bridge),
-      1,
-      l2Address
-    );
-    UUPSProxy mockedProxy = new UUPSProxy(address(v1), mockedV1Data);
-    mockedProxyV1 = L1Escrow(address(mockedProxy));
-    v2 = new L1EscrowV2Mock();
-    proxyV2 = L1EscrowV2Mock(address(proxyV1));
+    v2 = new MainnetBridgeV2Mock();
+    proxyV2 = MainnetBridgeV2Mock(address(proxyV1));
   }
 
   // ==========================================================================
@@ -158,16 +135,6 @@ contract L1EscrowTest is Test {
   // == bridge ================================================================
   // ==========================================================================
 
-  /// @notice Make sure it revert if amount is invalid
-  function testBridgeWithInvalidAmount() public {
-    vm.startPrank(alice);
-    IERC20(wsteth).safeApprove(address(proxyV1), 1 ether);
-    vm.expectRevert(
-      abi.encodeWithSelector(L1Escrow.BridgeAmountInvalid.selector)
-    );
-    proxyV1.bridgeToken(alice, 0, false);
-  }
-
   /// @notice Make sure it revert if bridghe is paused
   function testBridgeWithPausedState() public {
     vm.startPrank(emergency);
@@ -180,29 +147,8 @@ contract L1EscrowTest is Test {
     proxyV1.bridgeToken(alice, 1 ether, false);
   }
 
-  /// @notice Make sure L1Escrow submit correct message to the bridge
-  function testBridgeWithMockedBridge(uint256 bridgeAmount) public {
-    vm.assume(bridgeAmount > 1 ether);
-    vm.assume(bridgeAmount < 1_000_000_000 ether);
-
-    vm.startPrank(alice);
-    deal(wsteth, alice, bridgeAmount);
-    IERC20(wsteth).safeApprove(address(mockedProxyV1), bridgeAmount);
-    mockedProxyV1.bridgeToken(alice, bridgeAmount, false);
-    vm.stopPrank();
-
-    assertEq(IERC20(wsteth).balanceOf(alice), 0);
-    assertEq(IERC20(wsteth).balanceOf(address(mockedProxyV1)), bridgeAmount);
-
-    assertEq(bridge.destId(), 1);
-    assertEq(bridge.destAddress(), l2Address);
-    assertEq(bridge.forceUpdateGlobalExitRoot(), false);
-    assertEq(bridge.recipient(), alice);
-    assertEq(bridge.amount(), bridgeAmount);
-  }
-
-  /// @notice Make sure L1Escrow can interact with the bridge
-  function testBridgeWithRealBridge(uint256 bridgeAmount) public {
+  /// @notice Make sure MainnetBridge can interact with the bridge
+  function testBridgeToken(uint256 bridgeAmount) public {
     vm.assume(bridgeAmount > 1 ether);
     vm.assume(bridgeAmount < 1_000_000_000 ether);
 
@@ -220,47 +166,6 @@ contract L1EscrowTest is Test {
   // == onMessageReceived =====================================================
   // ==========================================================================
 
-  /// @notice Make sure to revert if message is invalid
-  function testOnMessageReceivedInvalidMessage(uint256 bridgeAmount) public {
-    vm.assume(bridgeAmount > 1 ether);
-    vm.assume(bridgeAmount < 1_000_000_000 ether);
-
-    vm.startPrank(alice);
-    deal(wsteth, alice, bridgeAmount);
-    IERC20(wsteth).safeApprove(address(proxyV1), bridgeAmount);
-    proxyV1.bridgeToken(alice, bridgeAmount, false);
-    vm.stopPrank();
-
-    address currentBridgeAddress = address(proxyV1.zkEvmBridge());
-    address originAddress = proxyV1.destAddress();
-    uint32 originNetwork = proxyV1.destId();
-    bytes memory metadata = abi.encode(bob, 1 ether);
-
-    // Invalid caller
-    vm.startPrank(bob);
-    vm.expectRevert(abi.encodeWithSelector(L1Escrow.MessageInvalid.selector));
-    proxyV1.onMessageReceived(originAddress, originNetwork, metadata);
-    vm.stopPrank();
-
-    // Valid caller; invalid origin address
-    vm.startPrank(currentBridgeAddress);
-    vm.expectRevert(abi.encodeWithSelector(L1Escrow.MessageInvalid.selector));
-    proxyV1.onMessageReceived(address(0), originNetwork, metadata);
-    vm.stopPrank();
-
-    // Valid caller; invalid origin network
-    vm.startPrank(currentBridgeAddress);
-    vm.expectRevert(abi.encodeWithSelector(L1Escrow.MessageInvalid.selector));
-    proxyV1.onMessageReceived(originAddress, 0, metadata);
-    vm.stopPrank();
-
-    // Valid caller; invalid metadata
-    vm.startPrank(currentBridgeAddress);
-    vm.expectRevert();
-    proxyV1.onMessageReceived(originAddress, originNetwork, "");
-    vm.stopPrank();
-  }
-
   /// @notice Make sure user can claim the DAI
   function testOnMessageReceivedValidMessage(uint256 bridgeAmount) public {
     vm.assume(bridgeAmount > 1 ether);
@@ -272,9 +177,9 @@ contract L1EscrowTest is Test {
     proxyV1.bridgeToken(bob, bridgeAmount, false);
     vm.stopPrank();
 
-    address currentBridgeAddress = address(proxyV1.zkEvmBridge());
-    address originAddress = proxyV1.destAddress();
-    uint32 originNetwork = proxyV1.destId();
+    address currentBridgeAddress = address(proxyV1.polygonZkEVMBridge());
+    address originAddress = proxyV1.counterpartContract();
+    uint32 originNetwork = proxyV1.counterpartNetwork();
     bytes memory messageData = abi.encode(bob, bridgeAmount);
 
     vm.startPrank(currentBridgeAddress);

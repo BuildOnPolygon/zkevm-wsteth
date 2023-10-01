@@ -4,11 +4,11 @@ pragma solidity 0.8.17;
 import {ERC1967Proxy} from "oz/proxy/ERC1967/ERC1967Proxy.sol";
 
 /**
- * @title WstETH_UUPSProxy
+ * @title WstETHUUPSProxy
  * @author sepyke.eth
  * @notice UUPS proxy smart contract
  */
-contract WstETH_UUPSProxy is ERC1967Proxy {
+contract WstETHUUPSProxy is ERC1967Proxy {
   constructor(address _implementation, bytes memory _data)
     ERC1967Proxy(_implementation, _data)
   {}

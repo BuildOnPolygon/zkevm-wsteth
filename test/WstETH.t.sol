@@ -4,7 +4,7 @@ pragma solidity 0.8.17;
 import {Test} from "forge-std/Test.sol";
 
 import {WstETH} from "../src/WstETH.sol";
-import {WstETH_UUPSProxy} from "../src/WstETH_UUPSProxy.sol";
+import {WstETHUUPSProxy} from "../src/proxies/WstETHUUPSProxy.sol";
 
 /**
  * @title WstETHV2Mock
@@ -52,7 +52,7 @@ contract WstETHTest is Test {
     bytes memory v1Data = abi.encodeWithSelector(
       WstETH.initialize.selector, admin, emergency, wstETHBridgeNonNativeChain
     );
-    WstETH_UUPSProxy proxy = new WstETH_UUPSProxy(address(v1), v1Data);
+    WstETHUUPSProxy proxy = new WstETHUUPSProxy(address(v1), v1Data);
     proxyV1 = WstETH(address(proxy));
 
     v2 = new WstETHV2Mock();

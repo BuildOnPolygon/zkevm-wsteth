@@ -35,6 +35,17 @@ contract WstETHWrapped is
   }
 
   /**
+   * @dev Modifier to make sure the caller is a bridge
+   */
+  modifier onlyBridge() {
+    require(
+      msg.sender == wstETHBridgeNonNativeChain,
+      "CustomERC20Wrapped::onlyBridge: Not PolygonZkEVMBridge"
+    );
+    _;
+  }
+
+  /**
    * @notice WstETH initializer
    * @param _adminAddress The admin address
    * @param _emergencyRoleAddress The emergency role address
@@ -89,5 +100,23 @@ contract WstETHWrapped is
     whenNotPaused
   {
     super._beforeTokenTransfer(from, to, amount);
+  }
+
+  /**
+   * @notice Mint token as bridge
+   * @param to the recipeint address
+   * @param value the token amount
+   */
+  function bridgeMint(address to, uint256 value) external onlyBridge {
+    _mint(to, value);
+  }
+
+  /**
+   * @notice Burn token as bridge
+   * @param account the owner address
+   * @param value the token amount
+   */
+  function bridgeBurn(address account, uint256 value) external onlyBridge {
+    _burn(account, value);
   }
 }

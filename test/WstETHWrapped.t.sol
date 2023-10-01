@@ -127,4 +127,45 @@ contract WstETHTest is Test {
     assertEq(proxyV1.nonces(alice), 0);
     assertTrue(proxyV1.DOMAIN_SEPARATOR() != "");
   }
+
+  // ==========================================================================
+  // == Mint ==================================================================
+  // ==========================================================================
+
+  /// @notice Mint as bridge
+  function testBridgeMintAsBridge() public {
+    vm.startPrank(wstETHBridgeNonNativeChain);
+    proxyV1.bridgeMint(alice, 1 ether);
+    vm.stopPrank();
+
+    assertEq(proxyV1.balanceOf(alice), 1 ether);
+  }
+
+  /// @notice Mint as non bridge
+  function testBridgeMintAsNonBridge() public {
+    vm.startPrank(alice);
+    vm.expectRevert("CustomERC20Wrapped::onlyBridge: Not PolygonZkEVMBridge");
+    proxyV1.bridgeMint(alice, 1 ether);
+  }
+
+  // ==========================================================================
+  // == Burn ==================================================================
+  // ==========================================================================
+
+  /// @notice Burn as bridge
+  function testBridgeBurnAsBridge() public {
+    vm.startPrank(wstETHBridgeNonNativeChain);
+    proxyV1.bridgeMint(alice, 1 ether);
+    proxyV1.bridgeBurn(alice, 1 ether);
+    vm.stopPrank();
+
+    assertEq(proxyV1.balanceOf(alice), 0);
+  }
+
+  /// @notice Burn as non bridge
+  function testBridgeBurnAsNonBridge() public {
+    vm.startPrank(alice);
+    vm.expectRevert("CustomERC20Wrapped::onlyBridge: Not PolygonZkEVMBridge");
+    proxyV1.bridgeBurn(alice, 1 ether);
+  }
 }

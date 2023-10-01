@@ -6,8 +6,6 @@ import {AccessControlDefaultAdminRulesUpgradeable} from
   "upgradeable/access/AccessControlDefaultAdminRulesUpgradeable.sol";
 import {PausableUpgradeable} from
   "upgradeable/security/PausableUpgradeable.sol";
-import {SignatureCheckerUpgradeable} from
-  "upgradeable/utils/cryptography/SignatureCheckerUpgradeable.sol";
 
 import {IPolygonZkEVMBridge} from "./interfaces/IPolygonZkEVMBridge.sol";
 import {PolygonERC20BridgeLibUpgradeable} from
@@ -15,11 +13,11 @@ import {PolygonERC20BridgeLibUpgradeable} from
 import {WstETHWrapped} from "./WstETHWrapped.sol";
 
 /**
- * @title WstETHBridgeNonNativeChain
+ * @title WstETHBridgeL2
  * @author sepyke.eth
  * @notice Main smart contract to bridge wstETH from Polygon zkEVM to Ethereum
  */
-contract WstETHBridgeNonNativeChain is
+contract WstETHBridgeL2 is
   UUPSUpgradeable,
   AccessControlDefaultAdminRulesUpgradeable,
   PausableUpgradeable,
@@ -37,7 +35,7 @@ contract WstETHBridgeNonNativeChain is
   }
 
   /**
-   * @notice WstETHBridgeNonNativeChain initializer
+   * @notice WstETHBridgeL2 initializer
    * @dev This initializer should be called via UUPSProxy constructor
    * @param _adminAddress The contract owner
    * @param _emergencyRoleAddress The emergency role address
@@ -66,8 +64,8 @@ contract WstETHBridgeNonNativeChain is
   }
 
   /**
-   * @dev The WstETHBridgeNonNativeChain can only be upgraded by the admin
-   * @param v new WstETHBridgeNonNativeChain version
+   * @dev The WstETHBridgeL2 can only be upgraded by the admin
+   * @param v new WstETHBridgeL2 version
    */
   function _authorizeUpgrade(address v)
     internal

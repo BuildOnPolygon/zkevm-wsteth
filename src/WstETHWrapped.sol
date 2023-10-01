@@ -26,8 +26,8 @@ contract WstETHWrapped is
   /// @notice Role identifiers
   bytes32 public constant EMERGENCY_ROLE = keccak256("EMERGENCY_ROLE");
 
-  /// @notice WstETHBridgeNonNativeChain
-  address public wstETHBridgeNonNativeChain;
+  /// @notice wstETHBridge address on polygon zkEVM
+  address public wstETHBridge;
 
   /// @notice Disable initializer on deploy
   constructor() {
@@ -39,7 +39,7 @@ contract WstETHWrapped is
    */
   modifier onlyBridge() {
     require(
-      msg.sender == wstETHBridgeNonNativeChain,
+      msg.sender == wstETHBridge,
       "CustomERC20Wrapped::onlyBridge: Not PolygonZkEVMBridge"
     );
     _;
@@ -49,19 +49,19 @@ contract WstETHWrapped is
    * @notice WstETH initializer
    * @param _adminAddress The admin address
    * @param _emergencyRoleAddress The emergency role address
-   * @param _wstETHBridgeNonNativeChain The bridge address on Polygon zkEVM
+   * @param _wstETHBridgeAddress The WstETH bridge address on Polygon zkEVM
    */
   function initialize(
     address _adminAddress,
     address _emergencyRoleAddress,
-    address _wstETHBridgeNonNativeChain
+    address _wstETHBridgeAddress
   ) public initializer {
     __AccessControlDefaultAdminRules_init(3 days, _adminAddress);
     __UUPSUpgradeable_init();
     __ERC20_init("Wrapped liquid staked Ether 2.0", "wstETH");
     __ERC20Permit_init("Wrapped liquid staked Ether 2.0");
     _grantRole(EMERGENCY_ROLE, _emergencyRoleAddress);
-    wstETHBridgeNonNativeChain = _wstETHBridgeNonNativeChain;
+    wstETHBridge = _wstETHBridgeAddress;
   }
 
   /**

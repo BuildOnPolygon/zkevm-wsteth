@@ -27,11 +27,11 @@ contract WstETHWrappedV2Mock is WstETHWrapped {
 }
 
 /**
- * @title WstETH
+ * @title WstETHWrapped
  * @author sepyke.eth
- * @notice Unit tests for WstETH
+ * @notice Unit tests for WstETHWrapped
  */
-contract WstETHTest is Test {
+contract WstETHWrappedTest is Test {
   string ZKEVM_RPC_URL = vm.envString("ZKEVM_RPC_URL");
 
   address admin = vm.addr(0xB453D);

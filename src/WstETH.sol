@@ -10,8 +10,6 @@ import {PausableUpgradeable} from
   "upgradeable/security/PausableUpgradeable.sol";
 import {ERC20PermitUpgradeable} from
   "upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
-import {ERC20PermitUpgradeable} from
-  "upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
 
 /**
  * @title WstETH
@@ -22,8 +20,8 @@ contract WstETH is
   Initializable,
   UUPSUpgradeable,
   AccessControlDefaultAdminRulesUpgradeable,
-  ERC20PermitUpgradeable,
-  PausableUpgradeable
+  PausableUpgradeable,
+  ERC20PermitUpgradeable
 {
   /// @notice Role identifiers
   bytes32 public constant EMERGENCY_ROLE = keccak256("EMERGENCY_ROLE");

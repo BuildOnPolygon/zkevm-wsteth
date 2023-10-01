@@ -5,16 +5,16 @@ import {Test} from "forge-std/Test.sol";
 import {IERC20} from "oz/token/ERC20/IERC20.sol";
 import {SafeERC20} from "oz/token/ERC20/utils/SafeERC20.sol";
 
-import {MainnetBridge} from "src/MainnetBridge.sol";
+import {WstETHBridgeNativeChain} from "src/WstETHBridgeNativeChain.sol";
 import {BridgeMock} from "./BridgeMock.sol";
 import {UUPSProxy} from "./UUPSProxy.sol";
 
 /**
- * @title MainnetBridgeV2Mock
+ * @title WstETHBridgeNativeChainV2Mock
  * @author sepyke.eth
- * @notice Mock contract to test upgradeability of MainnetBridge smart contract
+ * @notice Mock contract to test upgradeability of WstETHBridgeNativeChain smart contract
  */
-contract MainnetBridgeV2Mock is MainnetBridge {
+contract WstETHBridgeNativeChainV2Mock is WstETHBridgeNativeChain {
   function _receiveTokens(uint256) internal view override whenNotPaused {
     require(false, "test new logic");
   }
@@ -26,11 +26,11 @@ contract MainnetBridgeV2Mock is MainnetBridge {
 }
 
 /**
- * @title MainnetBridgeTest
+ * @title WstETHBridgeNativeChainTest
  * @author sepyke.eth
- * @notice Unit tests for MainnetBridge
+ * @notice Unit tests for WstETHBridgeNativeChain
  */
-contract MainnetBridgeTest is Test {
+contract WstETHBridgeNativeChainTest is Test {
   using SafeERC20 for IERC20;
 
   string ETH_RPC_URL = vm.envString("ETH_RPC_URL");
@@ -46,24 +46,24 @@ contract MainnetBridgeTest is Test {
   address bridgeAddress = address(0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe);
   address l2Address = address(4);
 
-  MainnetBridge v1;
-  MainnetBridge proxyV1;
-  MainnetBridge mockedV1;
-  MainnetBridge mockedProxyV1;
-  MainnetBridgeV2Mock v2;
-  MainnetBridgeV2Mock proxyV2;
+  WstETHBridgeNativeChain v1;
+  WstETHBridgeNativeChain proxyV1;
+  WstETHBridgeNativeChain mockedV1;
+  WstETHBridgeNativeChain mockedProxyV1;
+  WstETHBridgeNativeChainV2Mock v2;
+  WstETHBridgeNativeChainV2Mock proxyV2;
 
   function setUp() public {
     uint256 mainnetFork = vm.createFork(ETH_RPC_URL);
     vm.selectFork(mainnetFork);
 
-    v1 = new MainnetBridge();
-    bytes memory v1Data = abi.encodeWithSelector(MainnetBridge.initialize.selector, admin, emergency, wsteth, bridgeAddress, l2Address, 1);
+    v1 = new WstETHBridgeNativeChain();
+    bytes memory v1Data = abi.encodeWithSelector(WstETHBridgeNativeChain.initialize.selector, admin, emergency, wsteth, bridgeAddress, l2Address, 1);
     UUPSProxy proxy = new UUPSProxy(address(v1), v1Data);
-    proxyV1 = MainnetBridge(address(proxy));
+    proxyV1 = WstETHBridgeNativeChain(address(proxy));
 
-    v2 = new MainnetBridgeV2Mock();
-    proxyV2 = MainnetBridgeV2Mock(address(proxyV1));
+    v2 = new WstETHBridgeNativeChainV2Mock();
+    proxyV2 = WstETHBridgeNativeChainV2Mock(address(proxyV1));
   }
 
   // ==========================================================================
@@ -147,7 +147,7 @@ contract MainnetBridgeTest is Test {
     proxyV1.bridgeToken(alice, 1 ether, false);
   }
 
-  /// @notice Make sure MainnetBridge can interact with the bridge
+  /// @notice Make sure WstETHBridgeNativeChain can interact with the bridge
   function testBridgeToken(uint256 bridgeAmount) public {
     vm.assume(bridgeAmount > 1 ether);
     vm.assume(bridgeAmount < 1_000_000_000 ether);

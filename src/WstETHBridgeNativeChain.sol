@@ -9,15 +9,15 @@ import {UUPSUpgradeable} from "upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlDefaultAdminRulesUpgradeable} from "upgradeable/access/AccessControlDefaultAdminRulesUpgradeable.sol";
 import {PausableUpgradeable} from "upgradeable/security/PausableUpgradeable.sol";
 
-import {IPolygonZkEVMBridge} from "./IPolygonZkEVMBridge.sol";
-import {PolygonERC20BridgeLibUpgradeable} from "./PolygonERC20BridgeLibUpgradeable.sol";
+import {IPolygonZkEVMBridge} from "./interfaces/IPolygonZkEVMBridge.sol";
+import {PolygonERC20BridgeLibUpgradeable} from "./base/PolygonERC20BridgeLibUpgradeable.sol";
 
 /**
- * @title MainnetBridge
+ * @title WstETHBridgeNativeChain
  * @author sepyke.eth
  * @notice Main smart contract to bridge wstETH from Ethereum to Polygon zkEVM
  */
-contract MainnetBridge is
+contract WstETHBridgeNativeChain is
   Initializable,
   UUPSUpgradeable,
   AccessControlDefaultAdminRulesUpgradeable,
@@ -41,7 +41,7 @@ contract MainnetBridge is
   }
 
   /**
-   * @notice MainnetBridge initializer
+   * @notice WstETHBridgeNativeChain initializer
    * @param _adminAddress The admin address
    * @param _emergencyRoleAddress The emergency role address
    * @param _originTokenAddress The wstETH address
@@ -68,8 +68,8 @@ contract MainnetBridge is
   }
 
   /**
-   * @dev The MainnetBridge can only be upgraded by the owner
-   * @param v new MainnetBridge implementation
+   * @dev The WstETHBridgeNativeChain can only be upgraded by the owner
+   * @param v new WstETHBridgeNativeChain implementation
    */
   function _authorizeUpgrade(address v) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 

@@ -4,7 +4,7 @@ pragma solidity 0.8.17;
 import {Test} from "forge-std/Test.sol";
 
 import {WstETH} from "../src/WstETH.sol";
-import {UUPSProxy} from "./UUPSProxy.sol";
+import {WstETH_UUPSProxy} from "../src/WstETH_UUPSProxy.sol";
 
 /**
  * @title WstETHV2Mock
@@ -49,8 +49,10 @@ contract WstETHTest is Test {
     vm.selectFork(zkEvmFork);
 
     v1 = new WstETH();
-    bytes memory v1Data = abi.encodeWithSelector(WstETH.initialize.selector, admin, emergency, wstETHBridgeNonNativeChain);
-    UUPSProxy proxy = new UUPSProxy(address(v1), v1Data);
+    bytes memory v1Data = abi.encodeWithSelector(
+      WstETH.initialize.selector, admin, emergency, wstETHBridgeNonNativeChain
+    );
+    WstETH_UUPSProxy proxy = new WstETH_UUPSProxy(address(v1), v1Data);
     proxyV1 = WstETH(address(proxy));
 
     v2 = new WstETHV2Mock();
@@ -100,7 +102,7 @@ contract WstETHTest is Test {
     assertTrue(proxyV1.paused());
   }
 
-  /// @notice Upgrade as non-emergency role; make sure it reverted
+  /// @notice Pause as non-emergency role; make sure it reverted
   function testPauseAsNonEmergencyRole() public {
     vm.startPrank(alice);
     vm.expectRevert(
@@ -109,5 +111,15 @@ contract WstETHTest is Test {
       )
     );
     proxyV1.pause();
+  }
+
+  // ==========================================================================
+  // == ERC-2612 ==============================================================
+  // ==========================================================================
+
+  /// @notice Make sure it support ERC-2612
+  function testERC2612Compliant() public {
+    assertEq(proxyV1.nonces(alice), 0);
+    assertTrue(proxyV1.DOMAIN_SEPARATOR() != "");
   }
 }

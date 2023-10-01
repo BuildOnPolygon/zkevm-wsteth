@@ -10,7 +10,7 @@ remappings = [
 ]
 
 [fmt]
-line_length = 150
+line_length = 79
 tab_width = 2
 number_underscore = "thousands"
 wrap_comments = true

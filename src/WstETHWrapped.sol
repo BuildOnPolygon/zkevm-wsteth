@@ -23,11 +23,19 @@ contract WstETHWrapped is
   PausableUpgradeable,
   ERC20PermitUpgradeable
 {
+  /// @notice wstETHBridge address on polygon zkEVM
+  address public wstETHBridge;
+
+  /// @notice Add origin token address
+  address public originTokenAddress;
+
+  /// @notice wstETH origin from mainnet = 0; if from zkEVM then 1
+  uint32 public immutable originTokenNetwork = 0;
+
   /// @notice Role identifiers
   bytes32 public constant EMERGENCY_ROLE = keccak256("EMERGENCY_ROLE");
 
-  /// @notice wstETHBridge address on polygon zkEVM
-  address public wstETHBridge;
+  /// @notice Add origin token network
 
   /// @notice Disable initializer on deploy
   constructor() {
@@ -50,11 +58,13 @@ contract WstETHWrapped is
    * @param _adminAddress The admin address
    * @param _emergencyRoleAddress The emergency role address
    * @param _wstETHBridgeAddress The WstETH bridge address on Polygon zkEVM
+   * @param _originTokenAddress WstETH token address on mainnet
    */
   function initialize(
     address _adminAddress,
     address _emergencyRoleAddress,
-    address _wstETHBridgeAddress
+    address _wstETHBridgeAddress,
+    address _originTokenAddress
   ) public initializer {
     __AccessControlDefaultAdminRules_init(3 days, _adminAddress);
     __UUPSUpgradeable_init();
@@ -62,6 +72,7 @@ contract WstETHWrapped is
     __ERC20Permit_init("Wrapped liquid staked Ether 2.0");
     _grantRole(EMERGENCY_ROLE, _emergencyRoleAddress);
     wstETHBridge = _wstETHBridgeAddress;
+    originTokenAddress = _originTokenAddress;
   }
 
   /**

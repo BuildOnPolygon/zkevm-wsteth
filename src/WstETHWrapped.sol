@@ -12,11 +12,11 @@ import {ERC20PermitUpgradeable} from
   "upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
 
 /**
- * @title WstETH
+ * @title WstETHWrapped
  * @author sepyke.eth
  * @notice WstETH on Polygon zkEVM
  */
-contract WstETH is
+contract WstETHWrapped is
   Initializable,
   UUPSUpgradeable,
   AccessControlDefaultAdminRulesUpgradeable,

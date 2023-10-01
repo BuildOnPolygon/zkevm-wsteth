@@ -3,15 +3,16 @@ pragma solidity 0.8.17;
 
 import {Test} from "forge-std/Test.sol";
 
-import {WstETH} from "../src/WstETH.sol";
-import {WstETHUUPSProxy} from "../src/proxies/WstETHUUPSProxy.sol";
+import {WstETHWrapped} from "../src/WstETHWrapped.sol";
+import {WstETHWrappedUUPSProxy} from
+  "../src/proxies/WstETHWrappedUUPSProxy.sol";
 
 /**
  * @title WstETHV2Mock
  * @author sepyke.eth
  * @notice Mock contract to test upgradeability of WstETH smart contract
  */
-contract WstETHV2Mock is WstETH {
+contract WstETHWrappedV2Mock is WstETHWrapped {
   uint256 public some;
 
   /// @dev Add new function for testing purpose
@@ -39,24 +40,28 @@ contract WstETHTest is Test {
   address bob = vm.addr(0xB0B);
   address wstETHBridgeNonNativeChain = vm.addr(0xB121D);
 
-  WstETH v1;
-  WstETH proxyV1;
-  WstETHV2Mock v2;
-  WstETHV2Mock proxyV2;
+  WstETHWrapped v1;
+  WstETHWrapped proxyV1;
+  WstETHWrappedV2Mock v2;
+  WstETHWrappedV2Mock proxyV2;
 
   function setUp() public {
     uint256 zkEvmFork = vm.createFork(ZKEVM_RPC_URL);
     vm.selectFork(zkEvmFork);
 
-    v1 = new WstETH();
+    v1 = new WstETHWrapped();
     bytes memory v1Data = abi.encodeWithSelector(
-      WstETH.initialize.selector, admin, emergency, wstETHBridgeNonNativeChain
+      WstETHWrapped.initialize.selector,
+      admin,
+      emergency,
+      wstETHBridgeNonNativeChain
     );
-    WstETHUUPSProxy proxy = new WstETHUUPSProxy(address(v1), v1Data);
-    proxyV1 = WstETH(address(proxy));
+    WstETHWrappedUUPSProxy proxy =
+      new WstETHWrappedUUPSProxy(address(v1), v1Data);
+    proxyV1 = WstETHWrapped(address(proxy));
 
-    v2 = new WstETHV2Mock();
-    proxyV2 = WstETHV2Mock(address(proxyV1));
+    v2 = new WstETHWrappedV2Mock();
+    proxyV2 = WstETHWrappedV2Mock(address(proxyV1));
   }
 
   // ==========================================================================

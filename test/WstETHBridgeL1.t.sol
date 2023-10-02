@@ -54,18 +54,25 @@ contract WstETHBridgeL1Test is Test {
       create3Factory.getDeployed(deployer, keccak256(bytes("WstETHBridgeL2")));
   }
 
+  function _getWstETHWrappedAddress() internal returns (address) {
+    return
+      create3Factory.getDeployed(deployer, keccak256(bytes("WstETHWrapped")));
+  }
+
   function _deployWstETHBridgeL1() internal returns (WstETHBridgeL1 bridge) {
     vm.startPrank(deployer);
 
     WstETHBridgeL1 implementation = new WstETHBridgeL1();
 
     address polygonZkEVMBridge = 0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe;
+    address wrappedAddress = _getWstETHWrappedAddress();
     address counterpartContract = _getWstETHBridgeL2Address();
     uint32 counterpartNetwork = 1;
     bytes memory data = abi.encodeWithSelector(
       WstETHBridgeL1.initialize.selector,
       admin,
       emergency,
+      wrappedAddress,
       originToken,
       polygonZkEVMBridge,
       counterpartContract,

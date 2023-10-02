@@ -30,7 +30,10 @@ contract WstETHBridgeL1 is
   /// @notice Role identifiers
   bytes32 public constant EMERGENCY_ROLE = keccak256("EMERGENCY_ROLE");
 
-  /// @notice wstETH contract
+  /// @notice wstETH contract on Polygon zkEVM
+  IERC20 public wrappedTokenAddress;
+
+  /// @notice wstETH contract on Ethereum mainnet
   IERC20 public originTokenAddress;
 
   /// @notice wstETH origin from mainnet = 0; if from zkEVM then 1
@@ -45,7 +48,8 @@ contract WstETHBridgeL1 is
    * @notice WstETHBridgeL1 initializer
    * @param _adminAddress The admin address
    * @param _emergencyRoleAddress The emergency role address
-   * @param _originTokenAddress The wstETH address
+   * @param _originTokenAddress The wstETH address on Ethereum mainnet
+   * @param _wrappedTokenAddress The wstETHWrapped address on Polygon zkEVM
    * @param _polygonZkEVMBridge The Polygon zkEVM bridge address
    * @param _counterpartContract The token address on the Polygon zkEVM network
    * @param _counterpartNetwork The Polygon zkEVM ID on the bridge
@@ -53,7 +57,8 @@ contract WstETHBridgeL1 is
   function initialize(
     address _adminAddress,
     address _emergencyRoleAddress,
-    address _originTokenAddress,
+    IERC20 _wrappedTokenAddress,
+    IERC20 _originTokenAddress,
     IPolygonZkEVMBridge _polygonZkEVMBridge,
     address _counterpartContract,
     uint32 _counterpartNetwork
@@ -67,7 +72,8 @@ contract WstETHBridgeL1 is
 
     _grantRole(EMERGENCY_ROLE, _emergencyRoleAddress);
 
-    originTokenAddress = IERC20(_originTokenAddress);
+    wrappedTokenAddress = _wrappedTokenAddress;
+    originTokenAddress = _originTokenAddress;
   }
 
   /**

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
+import {IERC20} from "oz/token/ERC20/IERC20.sol";
 import {UUPSUpgradeable} from "upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlDefaultAdminRulesUpgradeable} from
   "upgradeable/access/AccessControlDefaultAdminRulesUpgradeable.sol";
@@ -26,8 +27,14 @@ contract WstETHBridgeL2 is
   /// @notice Role identifiers
   bytes32 public constant EMERGENCY_ROLE = keccak256("EMERGENCY_ROLE");
 
-  /// @notice Wrapped token address
+  /// @notice wstETH contract on Polygon zkEVM
   WstETHWrapped public wrappedTokenAddress;
+
+  /// @notice wstETH contract on Ethereum mainnet
+  IERC20 public originTokenAddress;
+
+  /// @notice wstETH origin from mainnet = 0; if from zkEVM then 1
+  uint32 public originTokenNetwork = 0;
 
   /// @notice Disable initializer on deploy
   constructor() {
@@ -47,8 +54,9 @@ contract WstETHBridgeL2 is
   function initialize(
     address _adminAddress,
     address _emergencyRoleAddress,
-    IPolygonZkEVMBridge _polygonZkEVMBridge,
     WstETHWrapped _wrappedTokenAddress,
+    IERC20 _originTokenAddress,
+    IPolygonZkEVMBridge _polygonZkEVMBridge,
     address _counterpartContract,
     uint32 _counterpartNetwork
   ) public initializer {
@@ -59,8 +67,10 @@ contract WstETHBridgeL2 is
       _polygonZkEVMBridge, _counterpartContract, _counterpartNetwork
     );
 
-    wrappedTokenAddress = _wrappedTokenAddress;
     _grantRole(EMERGENCY_ROLE, _emergencyRoleAddress);
+
+    wrappedTokenAddress = _wrappedTokenAddress;
+    originTokenAddress = _originTokenAddress;
   }
 
   /**

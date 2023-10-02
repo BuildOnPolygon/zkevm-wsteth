@@ -71,14 +71,9 @@ contract WstETHBridgeL2Test is Test {
     vm.startPrank(deployer);
 
     address wstETHBridgeAddress = _getWstETHBridgeL2Address();
-    address originTokenAddress = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
     WstETHWrapped implementation = new WstETHWrapped();
     bytes memory data = abi.encodeWithSelector(
-      WstETHWrapped.initialize.selector,
-      admin,
-      emergency,
-      wstETHBridgeAddress,
-      originTokenAddress
+      WstETHWrapped.initialize.selector, admin, emergency, wstETHBridgeAddress
     );
     bytes32 salt = keccak256(bytes("WstETHWrapped"));
     bytes memory creationCode = abi.encodePacked(
@@ -98,13 +93,15 @@ contract WstETHBridgeL2Test is Test {
     address wrappedTokenAddress = _getWstETHWrappedAddress();
     uint32 counterpartNetwork = 0;
     WstETHBridgeL2 implementation = new WstETHBridgeL2();
+    address originToken = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
 
     bytes memory data = abi.encodeWithSelector(
       WstETHBridgeL2.initialize.selector,
       admin,
       emergency,
-      polygonZkEVMBridge,
       wrappedTokenAddress,
+      originToken,
+      polygonZkEVMBridge,
       wstETHBridgeL1,
       counterpartNetwork
     );

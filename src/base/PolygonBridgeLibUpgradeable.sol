@@ -4,8 +4,6 @@ pragma solidity 0.8.17;
 
 import {Initializable} from "upgradeable/proxy/utils/Initializable.sol";
 
-import "../interfaces/IBasePolygonZkEVMGlobalExitRoot.sol";
-import "../interfaces/IBridgeMessageReceiver.sol";
 import "../interfaces/IPolygonZkEVMBridge.sol";
 
 /**

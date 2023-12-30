@@ -53,10 +53,11 @@ forge test --fork-url "https://zkevm-rpc.com" --match-path test/L2wstETH.t.sol -
 
 ## Contract addresses
 
-| Smart contract       | Network       | Address                                                                                                                        |
-| -------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| wstETH               | Mainnet       | [0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0](https://etherscan.io/address/0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0)          |
-| Polygon ZkEVM Bridge | Mainnet       | [0x2a3dd3eb832af982ec71669e178424b10dca2ede](https://etherscan.io/address/0x2a3dd3eb832af982ec71669e178424b10dca2ede)          |
-|                      | zkEVM Mainnet | [0x2a3dd3eb832af982ec71669e178424b10dca2ede](https://zkevm.polygonscan.com/address/0x2a3dd3eb832af982ec71669e178424b10dca2ede) |
-| L1Escrow             | Mainnet       | _To be deployed_                                                                                                               |
-| L2wstETH             | zkEVM Mainnet | _To be deployed_                                                                                                               |
+| Smart contract       | Network       | Address                                                                                                                             |
+| -------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| wstETH               | Mainnet       | [0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0](https://etherscan.io/address/0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0)               |
+| Polygon ZkEVM Bridge | Mainnet       | [0x2a3dd3eb832af982ec71669e178424b10dca2ede](https://etherscan.io/address/0x2a3dd3eb832af982ec71669e178424b10dca2ede)               |
+|                      | zkEVM Mainnet | [0x2a3dd3eb832af982ec71669e178424b10dca2ede](https://zkevm.polygonscan.com/address/0x2a3dd3eb832af982ec71669e178424b10dca2ede)      |
+| WstETHBridgeL1       | Mainnet       | [0xf0cde1e7f0fad79771cd526b1eb0a12f69582c01](https://etherscan.io/address/0xf0cde1e7f0fad79771cd526b1eb0a12f69582c01#code)          |
+| WstETHBridgeL2       | zkEVM Mainnet | [0xDB5D9c10FD2a92692DB51853e06058EE0436d69B](https://zkevm.polygonscan.com/address/0xdb5d9c10fd2a92692db51853e06058ee0436d69b#code) |
+| WstETHWrapped        | zkEVM Mainnet | [0xbf6De60Ccd9D22a5820A658fbE9fc87975EA204f](https://zkevm.polygonscan.com/address/0xbf6De60Ccd9D22a5820A658fbE9fc87975EA204f#code) |

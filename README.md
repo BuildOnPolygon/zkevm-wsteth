@@ -30,7 +30,7 @@ Create `.env` with the following contents:
 
 ```
 ETH_RPC_URL=""
-ETH_RPC_URL="https://zkevm-rpc.com"
+ZKEVM_RPC_URL="https://zkevm-rpc.com"
 ETHERSCAN_API_KEY=""
 ```
 

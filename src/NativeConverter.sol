@@ -8,18 +8,13 @@ import {Initializable} from "upgradeable/proxy/utils/Initializable.sol";
 import {UUPSUpgradeable} from "upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlDefaultAdminRulesUpgradeable} from
   "upgradeable/access/AccessControlDefaultAdminRulesUpgradeable.sol";
-import {PausableUpgradeable} from
-  "upgradeable/security/PausableUpgradeable.sol";
+import {PausableUpgradeable} from "upgradeable/security/PausableUpgradeable.sol";
 
 import {IPolygonZkEVMBridge} from "./interfaces/IPolygonZkEVMBridge.sol";
 
 import {WstETHWrappedV2} from "./WstETHWrappedV2.sol";
 
-contract NativeConverter is
-  AccessControlDefaultAdminRulesUpgradeable,
-  PausableUpgradeable,
-  UUPSUpgradeable
-{
+contract NativeConverter is AccessControlDefaultAdminRulesUpgradeable, PausableUpgradeable, UUPSUpgradeable {
   using SafeERC20 for IERC20;
 
   bytes32 public constant EMERGENCY_ROLE = keccak256("EMERGENCY_ROLE");
@@ -40,11 +35,7 @@ contract NativeConverter is
     _disableInitializers();
   }
 
-  function _authorizeUpgrade(address v)
-    internal
-    override
-    onlyRole(DEFAULT_ADMIN_ROLE)
-  {}
+  function _authorizeUpgrade(address v) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 
   function initialize(
     address admin_,
@@ -100,9 +91,7 @@ contract NativeConverter is
     require(amount <= bwWstETH.balanceOf(address(this)), "AMOUNT_TOO_LARGE");
 
     // transfer native wstETH from user to the converter, and burn it
-    IERC20(address(nativeWstETHV2)).safeTransferFrom(
-      msg.sender, address(this), amount
-    );
+    IERC20(address(nativeWstETHV2)).safeTransferFrom(msg.sender, address(this), amount);
     nativeWstETHV2.burn(amount);
     // and then send bridge-wrapped wstETH to the user
     bwWstETH.safeTransfer(receiver, amount);
@@ -111,7 +100,7 @@ contract NativeConverter is
   }
 
   /// @notice Migrates the L2 BridgeWrapped wstETH to L1
-  /// The L1 DAI will be sent to the L1Escrow.
+  /// The L1 wstETH will be sent to the L1Escrow.
   function migrate() external onlyRole(MIGRATOR_ROLE) whenNotPaused {
     uint256 amount = bwWstETH.balanceOf(address(this));
 

@@ -5,8 +5,7 @@ import {Test} from "forge-std/Test.sol";
 
 import {WstETHWrapped} from "../src/WstETHWrapped.sol";
 import {WstETHWrappedV2} from "../src/WstETHWrappedV2.sol";
-import {WstETHWrappedUUPSProxy} from
-  "../src/proxies/WstETHWrappedUUPSProxy.sol";
+import {WstETHWrappedUUPSProxy} from "../src/proxies/WstETHWrappedUUPSProxy.sol";
 
 contract WstETHWrappedTestV2 is Test {
   address _bridge = 0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe;

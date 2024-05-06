@@ -20,8 +20,7 @@ contract DeployWstETHWrapped is Script {
   address wstETHBridgeAddress = 0xDB5D9c10FD2a92692DB51853e06058EE0436d69B;
 
   // CREATE3 Factory
-  ICREATE3Factory factory =
-    ICREATE3Factory(0x93FEC2C00BfE902F733B57c5a6CeeD7CD1384AE1);
+  ICREATE3Factory factory = ICREATE3Factory(0x93FEC2C00BfE902F733B57c5a6CeeD7CD1384AE1);
 
   function run() public returns (address proxy) {
     uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
@@ -29,16 +28,10 @@ contract DeployWstETHWrapped is Script {
     vm.startBroadcast(deployerPrivateKey);
 
     WstETHWrapped wstETHWrapped = new WstETHWrapped();
-    bytes memory data = abi.encodeWithSelector(
-      WstETHWrapped.initialize.selector,
-      adminAddress,
-      emergencyRoleAddress,
-      wstETHBridgeAddress
-    );
+    bytes memory data =
+      abi.encodeWithSelector(WstETHWrapped.initialize.selector, adminAddress, emergencyRoleAddress, wstETHBridgeAddress);
     bytes32 salt = keccak256(bytes("WstETHWrapped"));
-    bytes memory creationCode = abi.encodePacked(
-      type(UUPSProxy).creationCode, abi.encode(address(wstETHWrapped), data)
-    );
+    bytes memory creationCode = abi.encodePacked(type(UUPSProxy).creationCode, abi.encode(address(wstETHWrapped), data));
     proxy = factory.deploy(salt, creationCode);
 
     vm.stopBroadcast();

@@ -9,10 +9,8 @@ import {NativeConverter} from "../src/NativeConverter.sol";
 import {WstETHWrapped} from "../src/WstETHWrapped.sol";
 import {WstETHWrappedV2} from "../src/WstETHWrappedV2.sol";
 
-import {NativeConverterUUPSProxy} from
-  "../src/proxies/NativeConverterUUPSProxy.sol";
-import {WstETHWrappedUUPSProxy} from
-  "../src/proxies/WstETHWrappedUUPSProxy.sol";
+import {NativeConverterUUPSProxy} from "../src/proxies/NativeConverterUUPSProxy.sol";
+import {WstETHWrappedUUPSProxy} from "../src/proxies/WstETHWrappedUUPSProxy.sol";
 
 contract NativeConverterTest is Test {
   address _bridge = 0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe;
@@ -111,9 +109,7 @@ contract NativeConverterTest is Test {
     // bob has 800k bridge-wrapped wstETH
     assertEq(_bwWstETH.balanceOf(_bob), amount);
     // native converter has 200k bridge-wrapped wstETH
-    assertEq(
-      _bwWstETH.balanceOf(address(_nativeConverter)), 200_000 * 10 ** 18
-    );
+    assertEq(_bwWstETH.balanceOf(address(_nativeConverter)), 200_000 * 10 ** 18);
   }
 
   function testOwnerCanMigrate() external {

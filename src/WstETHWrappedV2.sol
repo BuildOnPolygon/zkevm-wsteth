@@ -13,10 +13,7 @@ contract WstETHWrappedV2 is WstETHWrapped {
   }
 
   /// @notice Function to add/update a new minter
-  function addMinter(address minter, uint256 allowance)
-    external
-    onlyRole(EMERGENCY_ROLE)
-  {
+  function addMinter(address minter, uint256 allowance) external onlyRole(EMERGENCY_ROLE) {
     minters[minter] = true;
     minterAllowance[minter] = allowance;
   }

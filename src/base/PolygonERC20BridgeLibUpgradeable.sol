@@ -11,9 +11,7 @@ import "./PolygonBridgeLibUpgradeable.sol";
  *
  * https://github.com/0xPolygonHermez/code-examples/blob/main/customERC20-bridge-example/contracts/lib/PolygonERC20BridgeLib.sol
  */
-abstract contract PolygonERC20BridgeLibUpgradeable is
-  PolygonBridgeLibUpgradeable
-{
+abstract contract PolygonERC20BridgeLibUpgradeable is PolygonBridgeLibUpgradeable {
   /**
    * Sets bridge values
    * @param _polygonZkEVMBridge Polygon zkEVM bridge address
@@ -25,9 +23,7 @@ abstract contract PolygonERC20BridgeLibUpgradeable is
     address _counterpartContract,
     uint32 _counterpartNetwork
   ) internal onlyInitializing {
-    __PolygonBridgeLib_init_unchained(
-      _polygonZkEVMBridge, _counterpartContract, _counterpartNetwork
-    );
+    __PolygonBridgeLib_init_unchained(_polygonZkEVMBridge, _counterpartContract, _counterpartNetwork);
   }
 
   function __PolygonERC20BridgeLib_init_unchained(
@@ -57,11 +53,7 @@ abstract contract PolygonERC20BridgeLibUpgradeable is
    * @param forceUpdateGlobalExitRoot Indicates if the global exit root is
    * updated or not
    */
-  function bridgeToken(
-    address destinationAddress,
-    uint256 amount,
-    bool forceUpdateGlobalExitRoot
-  ) external {
+  function bridgeToken(address destinationAddress, uint256 amount, bool forceUpdateGlobalExitRoot) external {
     _receiveTokens(amount);
 
     // Encode message data
@@ -80,8 +72,7 @@ abstract contract PolygonERC20BridgeLibUpgradeable is
    */
   function _onMessageReceived(bytes memory data) internal override {
     // Decode message data
-    (address destinationAddress, uint256 amount) =
-      abi.decode(data, (address, uint256));
+    (address destinationAddress, uint256 amount) = abi.decode(data, (address, uint256));
 
     _transferTokens(destinationAddress, amount);
     emit ClaimTokens(destinationAddress, amount);
@@ -97,9 +88,7 @@ abstract contract PolygonERC20BridgeLibUpgradeable is
    * @dev Handle the transfer of the tokens
    * Must be implemented in parent contracts
    */
-  function _transferTokens(address destinationAddress, uint256 amount)
-    internal
-    virtual;
+  function _transferTokens(address destinationAddress, uint256 amount) internal virtual;
 
   // https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable#storage-gaps
   uint256[50] private __gap;

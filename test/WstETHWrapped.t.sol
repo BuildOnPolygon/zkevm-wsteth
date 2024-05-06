@@ -5,8 +5,7 @@ import {Test} from "forge-std/Test.sol";
 
 import {ICREATE3Factory} from "../src/interfaces/ICREATE3Factory.sol";
 import {WstETHWrapped} from "../src/WstETHWrapped.sol";
-import {WstETHWrappedUUPSProxy} from
-  "../src/proxies/WstETHWrappedUUPSProxy.sol";
+import {WstETHWrappedUUPSProxy} from "../src/proxies/WstETHWrappedUUPSProxy.sol";
 
 /**
  * @title WstETHV2Mock
@@ -35,8 +34,7 @@ contract WstETHWrappedV2Mock is WstETHWrapped {
 contract WstETHWrappedTest is Test {
   string ZKEVM_RPC_URL = vm.envString("ZKEVM_RPC_URL");
 
-  ICREATE3Factory create3Factory =
-    ICREATE3Factory(0x93FEC2C00BfE902F733B57c5a6CeeD7CD1384AE1);
+  ICREATE3Factory create3Factory = ICREATE3Factory(0x93FEC2C00BfE902F733B57c5a6CeeD7CD1384AE1);
 
   address deployer = vm.addr(0xC14C13);
   address admin = vm.addr(0xB453D);
@@ -48,8 +46,7 @@ contract WstETHWrappedTest is Test {
   WstETHWrapped wrappedToken;
 
   function _getWstETHBridgeL2Address() internal returns (address) {
-    return
-      create3Factory.getDeployed(deployer, keccak256(bytes("WstETHBridgeL2")));
+    return create3Factory.getDeployed(deployer, keccak256(bytes("WstETHBridgeL2")));
   }
 
   function _deployWstETHWrapped() internal returns (WstETHWrapped token) {
@@ -57,14 +54,10 @@ contract WstETHWrappedTest is Test {
 
     wstETHBridgeAddress = _getWstETHBridgeL2Address();
     WstETHWrapped implementation = new WstETHWrapped();
-    bytes memory data = abi.encodeWithSelector(
-      WstETHWrapped.initialize.selector, admin, emergency, wstETHBridgeAddress
-    );
+    bytes memory data = abi.encodeWithSelector(WstETHWrapped.initialize.selector, admin, emergency, wstETHBridgeAddress);
     bytes32 salt = keccak256(bytes("WstETHWrapped"));
-    bytes memory creationCode = abi.encodePacked(
-      type(WstETHWrappedUUPSProxy).creationCode,
-      abi.encode(address(implementation), data)
-    );
+    bytes memory creationCode =
+      abi.encodePacked(type(WstETHWrappedUUPSProxy).creationCode, abi.encode(address(implementation), data));
     address deployedAddress = create3Factory.deploy(salt, creationCode);
     token = WstETHWrapped(deployedAddress);
 
@@ -91,8 +84,7 @@ contract WstETHWrappedTest is Test {
     wrappedToken.upgradeTo(address(v2));
     vm.stopPrank();
 
-    WstETHWrappedV2Mock wrappedTokenV2 =
-      WstETHWrappedV2Mock(address(wrappedToken));
+    WstETHWrappedV2Mock wrappedTokenV2 = WstETHWrappedV2Mock(address(wrappedToken));
     wrappedTokenV2.setValue(2);
     assertEq(wrappedTokenV2.getValue(), 2);
   }

@@ -77,9 +77,12 @@ interface IPolygonZkEVMBridge {
     bytes calldata permitData
   ) external payable;
 
-  function bridgeMessage(uint32 destinationNetwork, address destinationAddress, bool forceUpdateGlobalExitRoot, bytes calldata metadata)
-    external
-    payable;
+  function bridgeMessage(
+    uint32 destinationNetwork,
+    address destinationAddress,
+    bool forceUpdateGlobalExitRoot,
+    bytes calldata metadata
+  ) external payable;
 
   function claimAsset(
     bytes32[32] calldata smtProof,

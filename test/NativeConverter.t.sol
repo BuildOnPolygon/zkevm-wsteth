@@ -66,7 +66,7 @@ contract NativeConverterTest is Test {
     vm.stopPrank();
 
     // configure native converter to be a minter with 1B allowance
-    vm.startPrank(_emergency);
+    vm.startPrank(_admin);
     _nativeWstEthV2.addMinter(address(_nativeConverter), 10 ** 9 * 10 ** 18);
     vm.stopPrank();
   }

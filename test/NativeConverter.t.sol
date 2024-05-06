@@ -144,7 +144,7 @@ contract NativeConverterTest is Test {
     vm.stopPrank();
   }
 
-  function testOwnerCanPauseUnpause() external {
+  function testEmergencyCanPauseDefaultAdminCanUnpause() external {
     vm.startPrank(_emergency);
 
     // unpaused, pause
@@ -152,7 +152,16 @@ contract NativeConverterTest is Test {
     _nativeConverter.pause();
     assertEq(_nativeConverter.paused(), true);
 
-    // paused, unpause
+    // paused, emergency CANNOT unpause
+    vm.expectRevert(
+      "AccessControl: account 0x14a1e1e4d8bea80c96edcaf655b8d1f35682c069 is missing role 0x0000000000000000000000000000000000000000000000000000000000000000"
+    );
+    _nativeConverter.unpause();
+    assertEq(_nativeConverter.paused(), true);
+    vm.stopPrank();
+
+    // paused, default admin CAN unpause
+    vm.startPrank(_admin);
     _nativeConverter.unpause();
     assertEq(_nativeConverter.paused(), false);
 
@@ -179,7 +188,7 @@ contract NativeConverterTest is Test {
     // paused, try to unpause, fail
     changePrank(_alice);
     vm.expectRevert(
-      "AccessControl: account 0xe05fcc23807536bee418f142d19fa0d21bb0cff7 is missing role 0xbf233dd2aafeb4d50879c4aa5c81e96d92f6e6945c906a58f9f2d1c1631b4b26"
+      "AccessControl: account 0xe05fcc23807536bee418f142d19fa0d21bb0cff7 is missing role 0x0000000000000000000000000000000000000000000000000000000000000000"
     );
     _nativeConverter.unpause();
     assertEq(_nativeConverter.paused(), true);

@@ -95,7 +95,7 @@ contract WstETHBridgeL2 is
    * @notice Resume the bridge
    * @dev Only EMERGENCY_ROLE can resume the bridge
    */
-  function unpause() external virtual onlyRole(EMERGENCY_ROLE) {
+  function unpause() external virtual onlyRole(DEFAULT_ADMIN_ROLE) {
     _unpause();
   }
 

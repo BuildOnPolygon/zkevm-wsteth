@@ -5,12 +5,10 @@ import {Test} from "forge-std/Test.sol";
 
 import {ICREATE3Factory} from "../src/interfaces/ICREATE3Factory.sol";
 import {WstETHWrapped} from "../src/WstETHWrapped.sol";
-import {WstETHWrappedUUPSProxy} from
-  "../src/proxies/WstETHWrappedUUPSProxy.sol";
+import {WstETHWrappedUUPSProxy} from "../src/proxies/WstETHWrappedUUPSProxy.sol";
 
 import {WstETHBridgeL2} from "../src/WstETHBridgeL2.sol";
-import {WstETHBridgeL2UUPSProxy} from
-  "../src/proxies/WstETHBridgeL2UUPSProxy.sol";
+import {WstETHBridgeL2UUPSProxy} from "../src/proxies/WstETHBridgeL2UUPSProxy.sol";
 
 /**
  * @title WstETHBridgeL2V2Mock
@@ -39,8 +37,7 @@ contract WstETHBridgeL2V2Mock is WstETHBridgeL2 {
 contract WstETHBridgeL2Test is Test {
   string ZKEVM_RPC_URL = vm.envString("ZKEVM_RPC_URL");
 
-  ICREATE3Factory create3Factory =
-    ICREATE3Factory(0x93FEC2C00BfE902F733B57c5a6CeeD7CD1384AE1);
+  ICREATE3Factory create3Factory = ICREATE3Factory(0x93FEC2C00BfE902F733B57c5a6CeeD7CD1384AE1);
 
   address deployer = vm.addr(0xC14C13);
   address admin = vm.addr(0xB453D);
@@ -53,18 +50,15 @@ contract WstETHBridgeL2Test is Test {
   WstETHBridgeL2 bridgeL2;
 
   function _getWstETHWrappedAddress() internal returns (address) {
-    return
-      create3Factory.getDeployed(deployer, keccak256(bytes("WstETHWrapped")));
+    return create3Factory.getDeployed(deployer, keccak256(bytes("WstETHWrapped")));
   }
 
   function _getWstETHBridgeL2Address() internal returns (address) {
-    return
-      create3Factory.getDeployed(deployer, keccak256(bytes("WstETHBridgeL2")));
+    return create3Factory.getDeployed(deployer, keccak256(bytes("WstETHBridgeL2")));
   }
 
   function _getWstETHBridgeL1Address() internal returns (address) {
-    return
-      create3Factory.getDeployed(deployer, keccak256(bytes("WstETHBridgeL1")));
+    return create3Factory.getDeployed(deployer, keccak256(bytes("WstETHBridgeL1")));
   }
 
   function _deployWstETHWrapped() internal returns (WstETHWrapped token) {
@@ -72,14 +66,10 @@ contract WstETHBridgeL2Test is Test {
 
     address wstETHBridgeAddress = _getWstETHBridgeL2Address();
     WstETHWrapped implementation = new WstETHWrapped();
-    bytes memory data = abi.encodeWithSelector(
-      WstETHWrapped.initialize.selector, admin, emergency, wstETHBridgeAddress
-    );
+    bytes memory data = abi.encodeWithSelector(WstETHWrapped.initialize.selector, admin, emergency, wstETHBridgeAddress);
     bytes32 salt = keccak256(bytes("WstETHWrapped"));
-    bytes memory creationCode = abi.encodePacked(
-      type(WstETHWrappedUUPSProxy).creationCode,
-      abi.encode(address(implementation), data)
-    );
+    bytes memory creationCode =
+      abi.encodePacked(type(WstETHWrappedUUPSProxy).creationCode, abi.encode(address(implementation), data));
     address deployedAddress = create3Factory.deploy(salt, creationCode);
     token = WstETHWrapped(deployedAddress);
 
@@ -106,10 +96,8 @@ contract WstETHBridgeL2Test is Test {
       counterpartNetwork
     );
     bytes32 salt = keccak256(bytes("WstETHBridgeL2"));
-    bytes memory creationCode = abi.encodePacked(
-      type(WstETHBridgeL2UUPSProxy).creationCode,
-      abi.encode(address(implementation), data)
-    );
+    bytes memory creationCode =
+      abi.encodePacked(type(WstETHBridgeL2UUPSProxy).creationCode, abi.encode(address(implementation), data));
     address deployedAddress = create3Factory.deploy(salt, creationCode);
     bridge = WstETHBridgeL2(deployedAddress);
 

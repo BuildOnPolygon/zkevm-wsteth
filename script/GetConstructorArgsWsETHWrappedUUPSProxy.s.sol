@@ -13,14 +13,9 @@ contract GetConstructorArgsWsETHWrappedUUPSProxy is Script {
   address wstETHBridgeAddress = 0xDB5D9c10FD2a92692DB51853e06058EE0436d69B;
 
   function run() public view {
-    bytes memory data = abi.encodeWithSelector(
-      WstETHWrapped.initialize.selector,
-      adminAddress,
-      emergencyRoleAddress,
-      wstETHBridgeAddress
-    );
-    bytes memory args =
-      abi.encode(0xF2400233954CA016882D1fe3C1aC07c10719d719, data);
+    bytes memory data =
+      abi.encodeWithSelector(WstETHWrapped.initialize.selector, adminAddress, emergencyRoleAddress, wstETHBridgeAddress);
+    bytes memory args = abi.encode(0xF2400233954CA016882D1fe3C1aC07c10719d719, data);
     console.logBytes(args);
   }
 }

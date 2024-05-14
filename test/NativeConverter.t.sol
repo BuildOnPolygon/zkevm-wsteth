@@ -9,10 +9,8 @@ import {NativeConverter} from "../src/NativeConverter.sol";
 import {WstETHWrapped} from "../src/WstETHWrapped.sol";
 import {WstETHWrappedV2} from "../src/WstETHWrappedV2.sol";
 
-import {NativeConverterUUPSProxy} from
-  "../src/proxies/NativeConverterUUPSProxy.sol";
-import {WstETHWrappedUUPSProxy} from
-  "../src/proxies/WstETHWrappedUUPSProxy.sol";
+import {NativeConverterUUPSProxy} from "../src/proxies/NativeConverterUUPSProxy.sol";
+import {WstETHWrappedUUPSProxy} from "../src/proxies/WstETHWrappedUUPSProxy.sol";
 
 contract NativeConverterTest is Test {
   address _bridge = 0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe;
@@ -68,7 +66,7 @@ contract NativeConverterTest is Test {
     vm.stopPrank();
 
     // configure native converter to be a minter with 1B allowance
-    vm.startPrank(_emergency);
+    vm.startPrank(_admin);
     _nativeWstEthV2.addMinter(address(_nativeConverter), 10 ** 9 * 10 ** 18);
     vm.stopPrank();
   }
@@ -111,9 +109,7 @@ contract NativeConverterTest is Test {
     // bob has 800k bridge-wrapped wstETH
     assertEq(_bwWstETH.balanceOf(_bob), amount);
     // native converter has 200k bridge-wrapped wstETH
-    assertEq(
-      _bwWstETH.balanceOf(address(_nativeConverter)), 200_000 * 10 ** 18
-    );
+    assertEq(_bwWstETH.balanceOf(address(_nativeConverter)), 200_000 * 10 ** 18);
   }
 
   function testOwnerCanMigrate() external {
@@ -144,7 +140,7 @@ contract NativeConverterTest is Test {
     vm.stopPrank();
   }
 
-  function testOwnerCanPauseUnpause() external {
+  function testEmergencyCanPauseDefaultAdminCanUnpause() external {
     vm.startPrank(_emergency);
 
     // unpaused, pause
@@ -152,7 +148,16 @@ contract NativeConverterTest is Test {
     _nativeConverter.pause();
     assertEq(_nativeConverter.paused(), true);
 
-    // paused, unpause
+    // paused, emergency CANNOT unpause
+    vm.expectRevert(
+      "AccessControl: account 0x14a1e1e4d8bea80c96edcaf655b8d1f35682c069 is missing role 0x0000000000000000000000000000000000000000000000000000000000000000"
+    );
+    _nativeConverter.unpause();
+    assertEq(_nativeConverter.paused(), true);
+    vm.stopPrank();
+
+    // paused, default admin CAN unpause
+    vm.startPrank(_admin);
     _nativeConverter.unpause();
     assertEq(_nativeConverter.paused(), false);
 
@@ -179,7 +184,7 @@ contract NativeConverterTest is Test {
     // paused, try to unpause, fail
     changePrank(_alice);
     vm.expectRevert(
-      "AccessControl: account 0xe05fcc23807536bee418f142d19fa0d21bb0cff7 is missing role 0xbf233dd2aafeb4d50879c4aa5c81e96d92f6e6945c906a58f9f2d1c1631b4b26"
+      "AccessControl: account 0xe05fcc23807536bee418f142d19fa0d21bb0cff7 is missing role 0x0000000000000000000000000000000000000000000000000000000000000000"
     );
     _nativeConverter.unpause();
     assertEq(_nativeConverter.paused(), true);

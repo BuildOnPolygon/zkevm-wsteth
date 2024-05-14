@@ -5,12 +5,10 @@ import {IERC20} from "oz/token/ERC20/IERC20.sol";
 import {UUPSUpgradeable} from "upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlDefaultAdminRulesUpgradeable} from
   "upgradeable/access/AccessControlDefaultAdminRulesUpgradeable.sol";
-import {PausableUpgradeable} from
-  "upgradeable/security/PausableUpgradeable.sol";
+import {PausableUpgradeable} from "upgradeable/security/PausableUpgradeable.sol";
 
 import {IPolygonZkEVMBridge} from "./interfaces/IPolygonZkEVMBridge.sol";
-import {PolygonERC20BridgeLibUpgradeable} from
-  "./base/PolygonERC20BridgeLibUpgradeable.sol";
+import {PolygonERC20BridgeLibUpgradeable} from "./base/PolygonERC20BridgeLibUpgradeable.sol";
 import {WstETHWrapped} from "./WstETHWrapped.sol";
 
 /**
@@ -63,9 +61,7 @@ contract WstETHBridgeL2 is
     __AccessControlDefaultAdminRules_init(3 days, _adminAddress);
     __UUPSUpgradeable_init();
     __Pausable_init();
-    __PolygonERC20BridgeLib_init(
-      _polygonZkEVMBridge, _counterpartContract, _counterpartNetwork
-    );
+    __PolygonERC20BridgeLib_init(_polygonZkEVMBridge, _counterpartContract, _counterpartNetwork);
 
     _grantRole(EMERGENCY_ROLE, _emergencyRoleAddress);
 
@@ -77,11 +73,7 @@ contract WstETHBridgeL2 is
    * @dev The WstETHBridgeL2 can only be upgraded by the admin
    * @param v new WstETHBridgeL2 version
    */
-  function _authorizeUpgrade(address v)
-    internal
-    override
-    onlyRole(DEFAULT_ADMIN_ROLE)
-  {}
+  function _authorizeUpgrade(address v) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 
   /**
    * @notice Pause the bridge
@@ -95,7 +87,7 @@ contract WstETHBridgeL2 is
    * @notice Resume the bridge
    * @dev Only EMERGENCY_ROLE can resume the bridge
    */
-  function unpause() external virtual onlyRole(EMERGENCY_ROLE) {
+  function unpause() external virtual onlyRole(DEFAULT_ADMIN_ROLE) {
     _unpause();
   }
 
@@ -103,12 +95,7 @@ contract WstETHBridgeL2 is
    * @dev Handle the reception of the tokens
    * @param amount Token amount
    */
-  function _receiveTokens(uint256 amount)
-    internal
-    virtual
-    override
-    whenNotPaused
-  {
+  function _receiveTokens(uint256 amount) internal virtual override whenNotPaused {
     wrappedTokenAddress.bridgeBurn(msg.sender, amount);
   }
 
@@ -118,12 +105,7 @@ contract WstETHBridgeL2 is
    * on the other network
    * @param amount Token amount
    */
-  function _transferTokens(address destinationAddress, uint256 amount)
-    internal
-    virtual
-    override
-    whenNotPaused
-  {
+  function _transferTokens(address destinationAddress, uint256 amount) internal virtual override whenNotPaused {
     wrappedTokenAddress.bridgeMint(destinationAddress, amount);
   }
 }

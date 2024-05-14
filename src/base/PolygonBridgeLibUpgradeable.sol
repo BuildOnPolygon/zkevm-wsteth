@@ -29,9 +29,7 @@ abstract contract PolygonBridgeLibUpgradeable is Initializable {
     address _counterpartContract,
     uint32 _counterpartNetwork
   ) internal onlyInitializing {
-    __PolygonBridgeLib_init_unchained(
-      _polygonZkEVMBridge, _counterpartContract, _counterpartNetwork
-    );
+    __PolygonBridgeLib_init_unchained(_polygonZkEVMBridge, _counterpartContract, _counterpartNetwork);
   }
 
   function __PolygonBridgeLib_init_unchained(
@@ -50,16 +48,8 @@ abstract contract PolygonBridgeLibUpgradeable is Initializable {
    * @param forceUpdateGlobalExitRoot Indicates if the global exit root is
    * updated or not
    */
-  function _bridgeMessage(
-    bytes memory messageData,
-    bool forceUpdateGlobalExitRoot
-  ) internal virtual {
-    polygonZkEVMBridge.bridgeMessage(
-      counterpartNetwork,
-      counterpartContract,
-      forceUpdateGlobalExitRoot,
-      messageData
-    );
+  function _bridgeMessage(bytes memory messageData, bool forceUpdateGlobalExitRoot) internal virtual {
+    polygonZkEVMBridge.bridgeMessage(counterpartNetwork, counterpartContract, forceUpdateGlobalExitRoot, messageData);
   }
 
   /**
@@ -70,25 +60,12 @@ abstract contract PolygonBridgeLibUpgradeable is Initializable {
    * usefull for this contract )
    * @param data Abi encoded metadata
    */
-  function onMessageReceived(
-    address originAddress,
-    uint32 originNetwork,
-    bytes memory data
-  ) external payable {
+  function onMessageReceived(address originAddress, uint32 originNetwork, bytes memory data) external payable {
     // Can only be called by the bridge
-    require(
-      msg.sender == address(polygonZkEVMBridge),
-      "TokenWrapped::PolygonBridgeLib: Not PolygonZkEVMBridge"
-    );
+    require(msg.sender == address(polygonZkEVMBridge), "TokenWrapped::PolygonBridgeLib: Not PolygonZkEVMBridge");
 
-    require(
-      counterpartContract == originAddress,
-      "TokenWrapped::PolygonBridgeLib: Not counterpart contract"
-    );
-    require(
-      counterpartNetwork == originNetwork,
-      "TokenWrapped::PolygonBridgeLib: Not counterpart network"
-    );
+    require(counterpartContract == originAddress, "TokenWrapped::PolygonBridgeLib: Not counterpart contract");
+    require(counterpartNetwork == originNetwork, "TokenWrapped::PolygonBridgeLib: Not counterpart network");
 
     _onMessageReceived(data);
   }

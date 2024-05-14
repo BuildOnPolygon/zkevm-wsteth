@@ -5,8 +5,7 @@ import {Test} from "forge-std/Test.sol";
 
 import {WstETHWrapped} from "../src/WstETHWrapped.sol";
 import {WstETHWrappedV2} from "../src/WstETHWrappedV2.sol";
-import {WstETHWrappedUUPSProxy} from
-  "../src/proxies/WstETHWrappedUUPSProxy.sol";
+import {WstETHWrappedUUPSProxy} from "../src/proxies/WstETHWrappedUUPSProxy.sol";
 
 contract WstETHWrappedTestV2 is Test {
   address _bridge = 0x2a3DD3EB832aF982ec71669E178424b10Dca2EDe;
@@ -43,7 +42,7 @@ contract WstETHWrappedTestV2 is Test {
     vm.stopPrank();
 
     // owner sets minter
-    vm.startPrank(_emergency);
+    vm.startPrank(_admin);
     _wstEthV2.addMinter(_minter, 10 ** 6 * 10 ** 18); // 1M wstETH allowance
     vm.stopPrank();
 
@@ -58,7 +57,7 @@ contract WstETHWrappedTestV2 is Test {
 
   function testOwnerCanRemoveMinter() external {
     // owner sets minter
-    vm.startPrank(_emergency);
+    vm.startPrank(_admin);
     _wstEthV2.addMinter(_minter, 10 ** 6 * 10 ** 18); // 1M wstETH allowance
     vm.stopPrank();
 
@@ -71,7 +70,7 @@ contract WstETHWrappedTestV2 is Test {
     assertEq(_wstEthV2.balanceOf(_joe), 1000 * 10 ** 18);
 
     // owner removes minter
-    vm.startPrank(_emergency);
+    vm.startPrank(_admin);
     _wstEthV2.removeMinter(_minter);
     vm.stopPrank();
 
@@ -86,7 +85,7 @@ contract WstETHWrappedTestV2 is Test {
     // trying to make itself a minter
     vm.startPrank(_minter);
     vm.expectRevert(
-      "AccessControl: account 0xe05fcc23807536bee418f142d19fa0d21bb0cff7 is missing role 0xbf233dd2aafeb4d50879c4aa5c81e96d92f6e6945c906a58f9f2d1c1631b4b26"
+      "AccessControl: account 0xe05fcc23807536bee418f142d19fa0d21bb0cff7 is missing role 0x0000000000000000000000000000000000000000000000000000000000000000"
     );
     _wstEthV2.addMinter(_minter, 10 ** 6 * 10 ** 18); // 1M DAI
     vm.stopPrank();
@@ -94,14 +93,14 @@ contract WstETHWrappedTestV2 is Test {
 
   function testNonOwnerCannotRemoveMinter() external {
     // owner sets minter
-    vm.startPrank(_emergency);
+    vm.startPrank(_admin);
     _wstEthV2.addMinter(_minter, 10 ** 6 * 10 ** 18); // 1M wstETH allowance
     vm.stopPrank();
 
     // non-owner tries to remove minter
     vm.startPrank(_minter);
     vm.expectRevert(
-      "AccessControl: account 0xe05fcc23807536bee418f142d19fa0d21bb0cff7 is missing role 0xbf233dd2aafeb4d50879c4aa5c81e96d92f6e6945c906a58f9f2d1c1631b4b26"
+      "AccessControl: account 0xe05fcc23807536bee418f142d19fa0d21bb0cff7 is missing role 0x0000000000000000000000000000000000000000000000000000000000000000"
     );
     _wstEthV2.removeMinter(_minter);
     vm.stopPrank();
@@ -109,7 +108,7 @@ contract WstETHWrappedTestV2 is Test {
 
   function testMinterCannotMintOverAllowance() external {
     // owner sets minter
-    vm.startPrank(_emergency);
+    vm.startPrank(_admin);
     _wstEthV2.addMinter(_minter, 10 ** 6 * 10 ** 18); // 1M wstETH allowance
     vm.stopPrank();
 
@@ -135,7 +134,7 @@ contract WstETHWrappedTestV2 is Test {
 
   function testMinterCanBurn() external {
     // owner sets minter
-    vm.startPrank(_emergency);
+    vm.startPrank(_admin);
     _wstEthV2.addMinter(_minter, 10 ** 6 * 10 ** 18); // 1M wstETH allowance
     vm.stopPrank();
 

@@ -7,8 +7,7 @@ import {IERC20} from "oz/token/ERC20/IERC20.sol";
 import {ICREATE3Factory} from "../src/interfaces/ICREATE3Factory.sol";
 
 import {WstETHBridgeL1} from "../src/WstETHBridgeL1.sol";
-import {WstETHBridgeL1UUPSProxy} from
-  "../src/proxies/WstETHBridgeL1UUPSProxy.sol";
+import {WstETHBridgeL1UUPSProxy} from "../src/proxies/WstETHBridgeL1UUPSProxy.sol";
 
 /**
  * @title WstETHBridgeL1V2Mock
@@ -37,8 +36,7 @@ contract WstETHBridgeL1V2Mock is WstETHBridgeL1 {
 contract WstETHBridgeL1Test is Test {
   string ETH_RPC_URL = vm.envString("ETH_RPC_URL");
 
-  ICREATE3Factory create3Factory =
-    ICREATE3Factory(0x93FEC2C00BfE902F733B57c5a6CeeD7CD1384AE1);
+  ICREATE3Factory create3Factory = ICREATE3Factory(0x93FEC2C00BfE902F733B57c5a6CeeD7CD1384AE1);
 
   address deployer = vm.addr(0xC14C13);
   address admin = vm.addr(0xB453D);
@@ -50,13 +48,11 @@ contract WstETHBridgeL1Test is Test {
   WstETHBridgeL1 bridgeL1;
 
   function _getWstETHBridgeL2Address() internal returns (address) {
-    return
-      create3Factory.getDeployed(deployer, keccak256(bytes("WstETHBridgeL2")));
+    return create3Factory.getDeployed(deployer, keccak256(bytes("WstETHBridgeL2")));
   }
 
   function _getWstETHWrappedAddress() internal returns (address) {
-    return
-      create3Factory.getDeployed(deployer, keccak256(bytes("WstETHWrapped")));
+    return create3Factory.getDeployed(deployer, keccak256(bytes("WstETHWrapped")));
   }
 
   function _deployWstETHBridgeL1() internal returns (WstETHBridgeL1 bridge) {
@@ -79,10 +75,8 @@ contract WstETHBridgeL1Test is Test {
       counterpartNetwork
     );
     bytes32 salt = keccak256(bytes("WstETHBridgeL1"));
-    bytes memory creationCode = abi.encodePacked(
-      type(WstETHBridgeL1UUPSProxy).creationCode,
-      abi.encode(address(implementation), data)
-    );
+    bytes memory creationCode =
+      abi.encodePacked(type(WstETHBridgeL1UUPSProxy).creationCode, abi.encode(address(implementation), data));
     address deployedAddress = create3Factory.deploy(salt, creationCode);
     bridge = WstETHBridgeL1(deployedAddress);
 

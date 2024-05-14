@@ -6,10 +6,8 @@ import {UUPSUpgradeable} from "upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlDefaultAdminRulesUpgradeable} from
   "upgradeable/access/AccessControlDefaultAdminRulesUpgradeable.sol";
 
-import {PausableUpgradeable} from
-  "upgradeable/security/PausableUpgradeable.sol";
-import {ERC20PermitUpgradeable} from
-  "upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
+import {PausableUpgradeable} from "upgradeable/security/PausableUpgradeable.sol";
+import {ERC20PermitUpgradeable} from "upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
 
 /**
  * @title WstETHWrapped
@@ -40,10 +38,7 @@ contract WstETHWrapped is
    * @dev Modifier to make sure the caller is a bridge
    */
   modifier onlyBridge() {
-    require(
-      msg.sender == wstETHBridge,
-      "CustomERC20Wrapped::onlyBridge: Not PolygonZkEVMBridge"
-    );
+    require(msg.sender == wstETHBridge, "CustomERC20Wrapped::onlyBridge: Not PolygonZkEVMBridge");
     _;
   }
 
@@ -53,11 +48,10 @@ contract WstETHWrapped is
    * @param _emergencyRoleAddress The emergency role address
    * @param _wstETHBridgeAddress The WstETH bridge address on Polygon zkEVM
    */
-  function initialize(
-    address _adminAddress,
-    address _emergencyRoleAddress,
-    address _wstETHBridgeAddress
-  ) public initializer {
+  function initialize(address _adminAddress, address _emergencyRoleAddress, address _wstETHBridgeAddress)
+    public
+    initializer
+  {
     __AccessControlDefaultAdminRules_init(3 days, _adminAddress);
     __UUPSUpgradeable_init();
     __ERC20_init("Wrapped liquid staked Ether 2.0", "wstETH");
@@ -70,11 +64,7 @@ contract WstETHWrapped is
    * @dev The WstETH can only be upgraded by the admin
    * @param v new WstETH version
    */
-  function _authorizeUpgrade(address v)
-    internal
-    override
-    onlyRole(DEFAULT_ADMIN_ROLE)
-  {}
+  function _authorizeUpgrade(address v) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 
   /**
    * @notice Pause the WstETH
@@ -88,19 +78,14 @@ contract WstETHWrapped is
    * @notice Resume the WstETH
    * @dev Only EMERGENCY_ROLE can resume the bridge
    */
-  function unpause() external virtual onlyRole(EMERGENCY_ROLE) {
+  function unpause() external virtual onlyRole(DEFAULT_ADMIN_ROLE) {
     _unpause();
   }
 
   /**
    * @notice _beforeTokenTransfer hook to pause the transfer
    */
-  function _beforeTokenTransfer(address from, address to, uint256 amount)
-    internal
-    virtual
-    override
-    whenNotPaused
-  {
+  function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override whenNotPaused {
     super._beforeTokenTransfer(from, to, amount);
   }
 

@@ -66,7 +66,7 @@ contract NativeConverter is AccessControlDefaultAdminRulesUpgradeable, PausableU
     _pause();
   }
 
-  function unpause() external virtual onlyRole(EMERGENCY_ROLE) {
+  function unpause() external virtual onlyRole(DEFAULT_ADMIN_ROLE) {
     _unpause();
   }
 

@@ -13,16 +13,13 @@ contract WstETHWrappedV2 is WstETHWrapped {
   }
 
   /// @notice Function to add/update a new minter
-  function addMinter(address minter, uint256 allowance)
-    external
-    onlyRole(EMERGENCY_ROLE)
-  {
+  function addMinter(address minter, uint256 allowance) external onlyRole(DEFAULT_ADMIN_ROLE) {
     minters[minter] = true;
     minterAllowance[minter] = allowance;
   }
 
   /// @notice Function to remove a minter
-  function removeMinter(address minter) external onlyRole(EMERGENCY_ROLE) {
+  function removeMinter(address minter) external onlyRole(DEFAULT_ADMIN_ROLE) {
     delete minters[minter];
     delete minterAllowance[minter];
   }
